@@ -1,0 +1,14 @@
+.no-product{
+    position : relative;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+}
+
+.no-product .message{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

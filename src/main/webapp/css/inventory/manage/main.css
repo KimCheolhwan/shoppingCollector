@@ -1,0 +1,136 @@
+.content{
+    flex-direction: row !important;
+}
+
+.inventory-manage{
+    display: flex;  /* 카테고리와 재고 테이블을 나란히 두기 위해 */
+    flex-direction: column;
+}
+
+#accordian{
+    margin-right: 25px;
+}
+
+#accordian ul li:hover .more-container{
+    display: block;
+}
+
+.dropdown-menu li{
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu a{
+    width: 100%;
+}
+
+.table-container{
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 15px;
+}
+
+.responsive-table .table-row div.col:last-child::after, .responsive-table .table-row div.col:nth-last-child(2)::after{
+    width: 0;
+}
+
+.product-table__header{
+    margin-right : 15px
+}
+
+.no-product{
+    margin-right : 20px;    /* .product-table__header, .responsive-table li의 margin-right가 변하면 수정해줘야함.*/
+    height : 450px;
+}
+
+.product-table__wrap-util{
+    background-color: #fff;
+    font-weight: normal;
+    height: 60px;
+}
+
+.product-table__col-desc, .product-table__wrap-util{
+    background-color: #a0a0a03b;
+}
+
+.product-table__wrap-util button{
+    margin-right: 5px;
+}
+
+.inventory-manage .wrap-util{
+    display: flex;
+    flex-direction: row;
+}
+
+.search{
+    align-items : center;
+    margin-left : auto;
+}
+
+.cnt-box{
+    color : #333;
+    margin-right: 5px;
+}
+
+.cnt-box__cnt{
+    font-weight: bold;
+}
+
+.wrap-util__util-left{
+    margin : 10px auto 10px 10px;
+}
+
+.wrap-util__util-right{
+    margin : 10px 35px 10px auto;
+}
+
+.btn-cate{
+    margin : 10px 0px 0px 90px;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 24px;
+    color: #2196f3;
+    border: 0;
+    background-color: transparent;
+}
+
+.btn-cate:hover{
+    color: #0378d6;
+}
+
+.btn-cate:focus{
+    outline:none;
+}
+
+.responsive-table .data-expands:hover .kakao-btn, .responsive-table .addition-row:hover .kakao-btn{
+    display: inline-block;
+}
+
+.responsive-table .table-row {
+    padding: 0;
+    flex-direction: column;
+}
+
+.responsive-table .row-open{
+    padding: 0px !important;
+}
+
+.row {
+    margin: 0;
+}
+
+.responsive-table .addition-row{
+    padding: 0.4rem 40px 0.4rem 40px !important;
+}
+
+.responsive-table .data-expands{
+    padding: 0.8rem 20px 0.8rem 20px !important;
+}
+
+.responsive-table .data-expands:hover{
+    background-color: #f7f5f5;
+}
+
+.responsive-table .addition-row:hover{
+    background-color: #f7f5f5;
+}

@@ -1,0 +1,84 @@
+.data-group .data-expands,
+.data-group .expandable {
+    will-change:
+            max-height,
+            padding,
+            opacity,
+            background;
+    transition:
+            ease max-height .5s,
+            ease padding .5s,
+            ease opacity .5s,
+            ease background .5s;
+}
+
+.data-group .data-expands, .data-group .addition-row{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    padding: 0.5em 0;
+}
+
+.data-group .expandable {
+    width: 100%;
+    transform-origin: top;
+    margin: 0 1.25em 0;
+    padding: 0 1.5em;
+    max-height: 0;
+    opacity: 0;
+}
+
+.addition-row{
+    display: flex;
+    margin : 0;
+}
+
+.row-active{
+    background-color: #fffff082 !important;
+}
+
+.row-open{
+    opacity: 1 !important;
+}
+
+.row-open {
+    max-height: 999px !important;
+    padding: 0.5em !important;
+}
+
+.row-toggle {
+    position: relative;
+    cursor: pointer;
+    float: right;
+    display: block;
+    font-size: 2em;
+    transition: ease transform .5s;
+    transform-origin: center;
+    line-height: 1;
+    font-weight: bold;
+}
+
+
+.row-toggle .horizontal,
+.row-toggle .vertical {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    content:" ";
+    width: 16px;
+    height: 2px;
+    background: rgba(120,120,120,1);
+    transition: ease transform .5s;
+    transform-origin: center;
+}
+
+.row-toggle .vertical {
+    transform: rotate(90deg);
+}
+
+.row-toggle-twist,
+.row-toggle-twist .vertical {
+    transform: rotate(180deg);
+}

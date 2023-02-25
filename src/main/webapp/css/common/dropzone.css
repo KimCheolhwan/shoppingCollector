@@ -1,0 +1,28 @@
+.drag-bg{
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 34px;
+    text-align: center;
+    color: #fff;
+    padding: 230px;
+    z-index: 9999;
+}
+
+.drop-form input[type=file]{  /* drag input */
+    display: none;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 34px;
+    margin-bottom: 12px;
+    letter-spacing: 0;
+    min-height: 100%;
+    position: absolute;
+    z-index: 10000;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    text-align: center;
+    color: #fff;
+    padding: 230px
+}

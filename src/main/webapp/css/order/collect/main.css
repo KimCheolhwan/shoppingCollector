@@ -1,0 +1,61 @@
+html, body {
+    margin : 0;
+    padding: 0;
+    height: 100%;
+}
+
+.content{
+    flex-direction: column;
+}
+
+.collect-option-table{
+    width: 500px;
+    height: 60px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.collect-option-table__collect-mode{
+    margin: 5px 20px;
+}
+
+.collect-option-table__desc{
+    background-color: #36304a;
+    color: #fff;
+    width: 100px;
+}
+
+.shop-table a{
+    text-underline: none;
+    color: #000;
+}
+
+.shop-table table{
+    width: 1250px;
+    border-collapse: collapse;
+    background: #fff; /* #f8f6ff */
+    border-radius: 8px;
+    border :1px solid;
+    overflow: hidden;
+    position: relative;
+}
+
+.shop-table__shop-img{  /* 주문관리의 온라인 쇼핑몰 이미지 */
+    width : 80px;
+    height : 25px; /* width, heigth를 px로 주어서 이미지들의 크기를 맞춤. */
+}
+
+.shop-table tbody tr[data-even="true"] {
+    background-color: #f5f5f5;
+}
+
+.shop-table tbody tr.hover {
+    color: #555555;
+    background-color: #e0e0e0 !important;
+    cursor: pointer;
+}
+
+.checkbox-col{
+    width : 30px;
+}

@@ -1,0 +1,6 @@
+insert into category values("user1_category1",1,1);
+insert into category values("user1_category2",2,1);
+insert into category values("user2_category1",3,2);
+insert into category values("user2_category2",4,2);
+insert into user values('user1','user1','2023-01-01 01:01:01','2023-01-01 01:01:01',1);
+insert into user values('user2','user2','2023-02-02 02:02:02','2023-02-02 02:02:02',2);
