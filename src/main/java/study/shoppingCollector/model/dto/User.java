@@ -5,11 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+import java.sql.Date;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
-    private String name;
-    private int category_id;
+public class User {
     private int user_id;
+    private String email;
+    private String password;
+    private Date register_date;
+    private Date update_date;
 }
