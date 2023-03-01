@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import study.shoppingCollector.model.dao.TestMapper;
 import study.shoppingCollector.model.dto.Category;
+import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 
 import java.util.List;
@@ -17,11 +18,23 @@ public class TestServiceImpl implements TestService{
 
     private final TestMapper testMapper;
 
-    @Autowired
-    private SqlSessionTemplate mybatis;
-
     @Override
     public List<Category> getAllCategoryList(User user) {
         return testMapper.getAllCategoryList(user);
     }
+
+    @Override
+    public List<Item> getItemInCategory(Category category) {
+        return testMapper.getItemInCategory(category);
+    }
+
+    @Override
+    public int getCategoryId(String categoryName) {
+        return testMapper.getCategoryId(categoryName);
+    }
+
+//    @Override
+//    public boolean findByUser(String email) {
+//        return testMapper.findByUser(email);
+//    }
 }

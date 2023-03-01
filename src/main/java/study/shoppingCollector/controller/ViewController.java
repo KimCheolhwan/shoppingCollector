@@ -2,13 +2,10 @@ package study.shoppingCollector.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import study.shoppingCollector.model.dto.Category;
 import study.shoppingCollector.model.dto.User;
 import study.shoppingCollector.service.TestService;
@@ -16,7 +13,6 @@ import study.shoppingCollector.service.TestService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -44,11 +40,19 @@ public class ViewController {
     }
 
     @PostMapping("/authenticate")
-    public String authenticate(HttpServletRequest request, HttpServletResponse response) {
+    public String authenticate(@RequestParam(name="loginId") String loginId, HttpServletRequest request, HttpServletResponse response) {
         log.info("/authenticate");
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession(false);
 
-        return "inventory/manage";
+        if (session == null) {
+            return "login";
+        }
+
+//        if(testService.findByUser(loginId))
+//        {
+//
+//        }
+        return "login";
     }
 
     @GetMapping("/test")

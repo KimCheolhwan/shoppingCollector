@@ -7,4 +7,18 @@
     <select id="getAllCategoryList" resultType="study.shoppingCollector.model.dto.Category" parameterType="study.shoppingCollector.model.dto.User">
         SELECT * FROM CATEGORY where user_id=#{user_id};
     </select>
+
+    <select id="getItemInCategory" resultType="study.shoppingCollector.model.dto.Item" parameterType="study.shoppingCollector.model.dto.Category">
+        SELECT * FROM Item where category_id=#{category_id};
+    </select>
+
+    <select id="getCategoryId" resultType="int" parameterType="study.shoppingCollector.model.dto.Category">
+        SELECT category_id FROM category where name=#{name};
+    </select>
+
+<!--    <select id="findByUser" resultType="bool" parameterType="String">-->
+<!--        SELECT email FROM user where email=#{email};-->
+<!--    </select>-->
+
+
 </mapper>
