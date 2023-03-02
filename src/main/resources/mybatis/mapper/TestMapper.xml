@@ -16,9 +16,15 @@
         SELECT category_id FROM category where name=#{name};
     </select>
 
-<!--    <select id="findByUser" resultType="bool" parameterType="String">-->
-<!--        SELECT email FROM user where email=#{email};-->
-<!--    </select>-->
+    <select id="findByUser" resultType="study.shoppingCollector.model.dto.User" parameterType="String">
+        SELECT * FROM user where email=#{email};
+    </select>
 
+    <select id="insertCategory" parameterType="study.shoppingCollector.model.dto.Category" resultType="Integer">
+        INSERT INTO CATEGORY(NAME,USER_ID) VALUES(#{name},#{user_id});
+    </select>
 
+    <select id="deleteCategory" parameterType="study.shoppingCollector.model.dto.Category" resultType="Integer">
+        DELETE FROM CATEGORY WHERE NAME=#{name} and user_id=#{user_id}
+    </select>
 </mapper>

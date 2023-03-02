@@ -42,17 +42,20 @@ public class ViewController {
     @PostMapping("/authenticate")
     public String authenticate(@RequestParam(name="loginId") String loginId, HttpServletRequest request, HttpServletResponse response) {
         log.info("/authenticate");
-        HttpSession session = request.getSession(false);
 
-        if (session == null) {
+        User user = testService.findByUser(loginId);
+        if(user == null)
+        {
             return "login";
         }
+        HttpSession session = request.getSession();
 
-//        if(testService.findByUser(loginId))
-//        {
-//
-//        }
-        return "login";
+        session.setAttribute(user.getEmail(),user);
+
+        System.out.println("session = " + session);
+        System.out.println("loginId = " + loginId);
+
+        return "inventory/manage";
     }
 
     @GetMapping("/test")

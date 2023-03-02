@@ -2,19 +2,21 @@ package study.shoppingCollector.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
+import org.hibernate.Session;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import study.shoppingCollector.model.dto.Category;
 import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 import study.shoppingCollector.service.TestService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,20 @@ public class InventoryController {
     private final TestService testService;
 
     @GetMapping("/inventory/categories")
-    public ResponseEntity<List<Category>> categories(Model model) {
-        log.info("inventory/categories");
-        User user = new User();
-        user.setUser_id(1);
+    public ResponseEntity<List<Category>> categories(HttpServletRequest request, Model model) {
+        log.info("@GetMapping(\"/inventory/categories\")");
+        HttpSession session = request.getSession(false);
+
+        if(session != null)
+        {
+            System.out.println("session = " + session);
+        }
+        User user = (User)session.getAttribute("jasd0330@naver.com");
+
+        if(user == null)
+        {
+            System.out.println("user = " + user);
+        }
         List<Category> list = testService.getAllCategoryList(user);
 
         HttpHeaders headers= new HttpHeaders();
@@ -39,7 +51,7 @@ public class InventoryController {
     }
     @GetMapping("/inventory/product")
     public ResponseEntity<List<Item>> items(@RequestParam(value = "categoryName") String categoryName, @RequestParam(value = "query") String query) {
-        log.info("inventory/product");
+        log.info(" @GetMapping(\"/inventory/product\")");
         log.info("{} {}",categoryName, query);
 //        int category_id = testService.getCategoryId(categoryName);
 //        log.info(category_id + " ");
@@ -57,4 +69,38 @@ public class InventoryController {
         return new ResponseEntity<>(items, HttpStatus.OK);
 
     }
+    @PostMapping("/inventory/category")
+    public ResponseEntity<HttpStatus> insertCategory(@RequestParam(value = "categoryName") String categoryName)
+    {
+        System.out.println("@PostMapping(\"/inventory/category\")");
+        Category category = new Category();
+        category.setUser_id(1);
+        category.setName(categoryName);
+        Integer isSuccess = testService.insertCategory(category);
+        System.out.println("isSuccess = " + isSuccess);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/inventory/category")
+    public ResponseEntity<HttpStatus> deleteCategory(@RequestParam(value = "categoryName") String categoryName)
+    {
+        System.out.println("@DeleteMapping(\"/inventory/category\")");
+        Category category = new Category();
+        category.setUser_id(1);
+        category.setName(categoryName);
+        Integer isSuccess = testService.deleteCategory(category);
+        System.out.println("isSuccess = " + isSuccess);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/inventory/category")
+    public ResponseEntity<HttpStatus> putCategory(@RequestParam(value = "oldCategoryName") String oldCategoryName,
+                                                  @RequestParam(value = "newCategoryName") String newCategoryName)
+    {
+        System.out.println("@PutMapping(\"/inventory/category\")");
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

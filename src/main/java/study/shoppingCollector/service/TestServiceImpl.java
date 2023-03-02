@@ -33,8 +33,18 @@ public class TestServiceImpl implements TestService{
         return testMapper.getCategoryId(categoryName);
     }
 
-//    @Override
-//    public boolean findByUser(String email) {
-//        return testMapper.findByUser(email);
-//    }
+    @Override
+    public User findByUser(String email) {
+        return testMapper.findByUser(email);
+    }
+
+    @Override
+    public Integer insertCategory(Category category) {
+        return testMapper.insertCategory(category);
+    }
+
+    @Override
+    public Integer deleteCategory(Category category) {
+        return testMapper.deleteCategory(category);
+    }
 }

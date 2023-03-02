@@ -17,5 +17,9 @@ public interface TestMapper {
 
     int getCategoryId(String categoryName);
 
-//    boolean findByUser(String email);
+    User findByUser(String email);
+
+    Integer insertCategory(Category category);
+
+    Integer deleteCategory(Category category);
 }
