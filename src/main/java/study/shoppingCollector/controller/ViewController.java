@@ -1,6 +1,7 @@
 package study.shoppingCollector.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,25 +24,30 @@ public class ViewController {
 
     @GetMapping("/")
     public String login(HttpServletRequest request, HttpServletResponse response) {
-        log.info("/");
+        log.info("@GetMapping(\"/\")");
         return "login";
     }
 
     @GetMapping("/order/collect")
     public String collect(HttpServletRequest request, HttpServletResponse response) {
-        log.info("/order/collect");
+        log.info("@GetMapping(\"/order/collect\")");
         return "order/collect";
     }
 
     @GetMapping("/inventory/manage")
     public String manage(HttpServletRequest request, HttpServletResponse response) {
-        log.info("/inventory/manage");
+        log.info("@GetMapping(\"/inventory/manage\")");
         return "inventory/manage";
+    }
+    @GetMapping("/inventory/products/add")
+    public String addProduct(HttpServletRequest request, HttpServletResponse response) {
+        log.info("@GetMapping(\"/inventory/products/add\")");
+        return "inventory/addProducts";
     }
 
     @PostMapping("/authenticate")
     public String authenticate(@RequestParam(name="loginId") String loginId, HttpServletRequest request, HttpServletResponse response) {
-        log.info("/authenticate");
+        log.info("@PostMapping(\"/authenticate\")");
 
         User user = testService.findByUser(loginId);
         if(user == null)
@@ -52,21 +58,10 @@ public class ViewController {
 
         session.setAttribute(user.getEmail(),user);
 
-        System.out.println("session = " + session);
-        System.out.println("loginId = " + loginId);
+        log.info("session = " + session);
+        log.info("loginId = " + loginId);
 
         return "inventory/manage";
     }
 
-    @GetMapping("/test")
-    public String test(){
-        User user = new User();
-        user.setUser_id(2);
-        List<Category> list = testService.getAllCategoryList(user);
-        for(int i=0;i<list.size();i++)
-        {
-            log.info(list.get(i).getName());
-        }
-        return "inventory/manage";
-    }
 }

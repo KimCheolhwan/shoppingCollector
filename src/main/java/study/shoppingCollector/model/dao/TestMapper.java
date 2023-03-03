@@ -6,6 +6,7 @@ import study.shoppingCollector.model.dto.Category;
 import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -15,11 +16,13 @@ public interface TestMapper {
 
     List<Item> getItemInCategory(Category category);
 
-    int getCategoryId(String categoryName);
+    Category getCategory(Category category);
 
     User findByUser(String email);
 
     Integer insertCategory(Category category);
 
     Integer deleteCategory(Category category);
+
+    boolean updateCategoryName(HashMap<String, String> map);
 }

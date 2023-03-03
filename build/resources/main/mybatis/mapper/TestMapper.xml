@@ -12,19 +12,26 @@
         SELECT * FROM Item where category_id=#{category_id};
     </select>
 
-    <select id="getCategoryId" resultType="int" parameterType="study.shoppingCollector.model.dto.Category">
-        SELECT category_id FROM category where name=#{name};
+    <select id="getCategory" resultType="study.shoppingCollector.model.dto.Category" parameterType="study.shoppingCollector.model.dto.Category">
+        SELECT * FROM category where name=#{name} and user_id=#{user_id};
     </select>
 
     <select id="findByUser" resultType="study.shoppingCollector.model.dto.User" parameterType="String">
         SELECT * FROM user where email=#{email};
     </select>
 
-    <select id="insertCategory" parameterType="study.shoppingCollector.model.dto.Category" resultType="Integer">
+    <insert id="insertCategory" parameterType="study.shoppingCollector.model.dto.Category">
         INSERT INTO CATEGORY(NAME,USER_ID) VALUES(#{name},#{user_id});
-    </select>
+    </insert>
 
-    <select id="deleteCategory" parameterType="study.shoppingCollector.model.dto.Category" resultType="Integer">
+    <delete id="deleteCategory" parameterType="study.shoppingCollector.model.dto.Category">
         DELETE FROM CATEGORY WHERE NAME=#{name} and user_id=#{user_id}
-    </select>
+    </delete>
+
+    <update id="updateCategoryName" parameterType="hashmap">
+        UPDATE CATEGORY as A,
+        (SELECT * FROM CATEGORY where user_id=#{user_id} and name=#{oldCategoryName}) as B
+        SET A.name=#{newCategoryName}
+        where A.category_id=B.category_id;
+    </update>
 </mapper>

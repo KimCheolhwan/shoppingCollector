@@ -14,10 +14,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class Item {
     private int item_id;
-    private String name;
-    private String manufacturer;
-    private int amount;
-    private Timestamp warehouseDate;
-    private String unit;
     private int category_id;
+    private String categoryName;
+    private int amount;
+    private String unit;
+    private Timestamp warehouseDate;
+    private String manufacturer;
 }

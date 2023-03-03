@@ -10,6 +10,7 @@ import study.shoppingCollector.model.dto.Category;
 import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -29,8 +30,8 @@ public class TestServiceImpl implements TestService{
     }
 
     @Override
-    public int getCategoryId(String categoryName) {
-        return testMapper.getCategoryId(categoryName);
+    public Category getCategory(Category category) {
+        return testMapper.getCategory(category);
     }
 
     @Override
@@ -46,5 +47,10 @@ public class TestServiceImpl implements TestService{
     @Override
     public Integer deleteCategory(Category category) {
         return testMapper.deleteCategory(category);
+    }
+//
+    @Override
+    public boolean updateCategoryName(HashMap<String, String> map) {
+        return testMapper.updateCategoryName(map);
     }
 }

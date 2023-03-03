@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 @RestController
 @Slf4j
@@ -69,6 +70,14 @@ public class InventoryController {
         return new ResponseEntity<>(items, HttpStatus.OK);
 
     }
+    @PostMapping("/inventory/product")
+    public ResponseEntity<HttpStatus> insertItem(@RequestBody HashMap<String,Object> param) {
+        log.info("@PostMapping(\"/inventory/product\")");
+        log.info(param.toString());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
     @PostMapping("/inventory/category")
     public ResponseEntity<HttpStatus> insertCategory(@RequestParam(value = "categoryName") String categoryName)
     {
@@ -76,8 +85,7 @@ public class InventoryController {
         Category category = new Category();
         category.setUser_id(1);
         category.setName(categoryName);
-        Integer isSuccess = testService.insertCategory(category);
-        System.out.println("isSuccess = " + isSuccess);
+        testService.insertCategory(category);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -89,7 +97,6 @@ public class InventoryController {
         category.setUser_id(1);
         category.setName(categoryName);
         Integer isSuccess = testService.deleteCategory(category);
-        System.out.println("isSuccess = " + isSuccess);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -99,8 +106,23 @@ public class InventoryController {
                                                   @RequestParam(value = "newCategoryName") String newCategoryName)
     {
         System.out.println("@PutMapping(\"/inventory/category\")");
+        Category checkCategory = new Category();
+        checkCategory.setUser_id(1);
+        checkCategory.setName(newCategoryName);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(testService.getCategory(checkCategory) == null)
+        {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("oldCategoryName", oldCategoryName);
+            map.put("newCategoryName", newCategoryName);
+            map.put("user_id","1");
+
+            testService.updateCategoryName(map);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
-
 }
