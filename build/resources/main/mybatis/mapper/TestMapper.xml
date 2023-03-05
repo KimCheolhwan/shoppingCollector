@@ -8,12 +8,12 @@
         SELECT * FROM CATEGORY where user_id=#{user_id};
     </select>
 
-    <select id="getItemInCategory" resultType="study.shoppingCollector.model.dto.Item" parameterType="study.shoppingCollector.model.dto.Category">
-        SELECT * FROM Item where category_id=#{category_id};
-    </select>
-
     <select id="getCategory" resultType="study.shoppingCollector.model.dto.Category" parameterType="study.shoppingCollector.model.dto.Category">
         SELECT * FROM category where name=#{name} and user_id=#{user_id};
+    </select>
+
+    <select id="selectCategoryName" resultType="String" parameterType="int">
+        select name from category where category_id=#{categpry_id};
     </select>
 
     <select id="findByUser" resultType="study.shoppingCollector.model.dto.User" parameterType="String">
@@ -33,5 +33,49 @@
         (SELECT * FROM CATEGORY where user_id=#{user_id} and name=#{oldCategoryName}) as B
         SET A.name=#{newCategoryName}
         where A.category_id=B.category_id;
+    </update>
+
+    <insert id="insertItem" parameterType="hashmap">
+        insert into item(manufacturer,amount,warehouseDate,unit,category_id,name)
+        values (#{manufacturer},#{amount},#{warehouseDate},#{unit},#{category_id},#{name});
+    </insert>
+
+    <select id="getItemInCategory" resultType="study.shoppingCollector.model.dto.Item" parameterType="study.shoppingCollector.model.dto.Category">
+        SELECT * FROM Item where category_id=#{category_id};
+    </select>
+
+    <select id="selectAllItems" resultType="study.shoppingCollector.model.dto.Item" parameterType="int">
+        select * from item as A, (select category_id from category where user_id=#{user_id}) as B where A.category_id=B.category_id;
+    </select>
+
+    <update id="updateProductName" parameterType="hashmap">
+        update item as A, (select category_id from category where user_id=#{user_id}) as B
+        set a.name=#{newProdNm}
+        where A.category_id=B.category_id and a.name=#{oldProdNm};
+
+    </update>
+
+    <update id="updateManufacturer" parameterType="hashmap">
+        update item as A, (select category_id from category where user_id=#{user_id}) as B
+        set a.manufacturer=#{newManufacturer}
+        where A.category_id=B.category_id and a.name=#{prodNm};
+    </update>
+
+    <update id="updateWarehouseDate" parameterType="hashmap">
+        update item as A, (select category_id from category where user_id=#{user_id}) as B
+        set a.warehouseDate=#{newWarehouseDt}
+        where A.category_id=B.category_id and a.name=#{prodNm};
+    </update>
+
+    <update id="updateCategory" parameterType="hashmap">
+        update item as A, (select category_id from category where user_id=#{user_id}) as B
+        set a.category_id=#{newCategoryId}
+        where a.name=#{prodNm};
+    </update>
+
+    <update id="updateUnit" parameterType="hashmap">
+        update item as A, (select category_id from category where user_id=#{user_id}) as B
+        set a.unit=#{newUnit}
+        where A.category_id=B.category_id and a.name=#{prodNm};
     </update>
 </mapper>

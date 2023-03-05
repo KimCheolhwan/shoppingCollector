@@ -25,4 +25,20 @@ public interface TestMapper {
     Integer deleteCategory(Category category);
 
     boolean updateCategoryName(HashMap<String, String> map);
+
+    boolean insertItem(HashMap<String, Object> map);
+
+    List<Item> selectAllItems(int user_id);
+
+    String selectCategoryName(int user_id);
+
+    boolean updateProductName(HashMap<String, Object> map);
+
+    boolean updateManufacturer(HashMap<String, Object> map);
+
+    boolean updateWarehouseDate(HashMap<String, Object> map);
+
+    boolean updateCategory(HashMap<String, Object> map);
+
+    boolean updateUnit(HashMap<String, Object> map);
 }

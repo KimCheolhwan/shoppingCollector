@@ -53,4 +53,44 @@ public class TestServiceImpl implements TestService{
     public boolean updateCategoryName(HashMap<String, String> map) {
         return testMapper.updateCategoryName(map);
     }
+
+    @Override
+    public boolean insertItem(HashMap<String, Object> map) {
+        return testMapper.insertItem(map);
+    }
+
+    @Override
+    public List<Item> selectAllItems(int user_id) {
+        return testMapper.selectAllItems(user_id);
+    }
+
+    @Override
+    public String selectCategoryName(int user_id) {
+        return testMapper.selectCategoryName(user_id);
+    }
+
+    @Override
+    public boolean updateProductName(HashMap<String, Object> map) {
+        return testMapper.updateProductName(map);
+    }
+
+    @Override
+    public boolean updateManufacturer(HashMap<String, Object> map) {
+        return testMapper.updateManufacturer(map);
+    }
+
+    @Override
+    public boolean updateWarehouseDate(HashMap<String, Object> map) {
+        return testMapper.updateWarehouseDate(map);
+    }
+
+    @Override
+    public boolean updateCategory(HashMap<String, Object> map) {
+        return testMapper.updateCategory(map);
+    }
+
+    @Override
+    public boolean updateUnit(HashMap<String, Object> map) {
+        return testMapper.updateUnit(map);
+    }
 }

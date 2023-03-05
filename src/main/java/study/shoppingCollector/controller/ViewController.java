@@ -3,6 +3,8 @@ package study.shoppingCollector.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,7 @@ import study.shoppingCollector.service.TestService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
@@ -22,6 +25,7 @@ import java.util.List;
 public class ViewController {
     private final TestService testService;
 
+    public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
     @GetMapping("/")
     public String login(HttpServletRequest request, HttpServletResponse response) {
         log.info("@GetMapping(\"/\")");
@@ -49,17 +53,6 @@ public class ViewController {
     public String authenticate(@RequestParam(name="loginId") String loginId, HttpServletRequest request, HttpServletResponse response) {
         log.info("@PostMapping(\"/authenticate\")");
 
-        User user = testService.findByUser(loginId);
-        if(user == null)
-        {
-            return "login";
-        }
-        HttpSession session = request.getSession();
-
-        session.setAttribute(user.getEmail(),user);
-
-        log.info("session = " + session);
-        log.info("loginId = " + loginId);
 
         return "inventory/manage";
     }

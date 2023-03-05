@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,6 +19,8 @@ public class Item {
     private String categoryName;
     private int amount;
     private String unit;
-    private Timestamp warehouseDate;
+    private String warehouseDate;
     private String manufacturer;
+    private String name;
+    private List<Item> childProductList;
 }

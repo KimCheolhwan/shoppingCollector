@@ -1,5 +1,8 @@
 package study.shoppingCollector.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Delete;
@@ -17,10 +20,14 @@ import study.shoppingCollector.service.TestService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -28,21 +35,11 @@ public class InventoryController {
 
     private final TestService testService;
 
+    public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+
     @GetMapping("/inventory/categories")
     public ResponseEntity<List<Category>> categories(HttpServletRequest request, Model model) {
         log.info("@GetMapping(\"/inventory/categories\")");
-        HttpSession session = request.getSession(false);
-
-        if(session != null)
-        {
-            System.out.println("session = " + session);
-        }
-        User user = (User)session.getAttribute("jasd0330@naver.com");
-
-        if(user == null)
-        {
-            System.out.println("user = " + user);
-        }
         List<Category> list = testService.getAllCategoryList(user);
 
         HttpHeaders headers= new HttpHeaders();
@@ -50,34 +47,48 @@ public class InventoryController {
         return ResponseEntity.ok(list);
 
     }
+
     @GetMapping("/inventory/product")
     public ResponseEntity<List<Item>> items(@RequestParam(value = "categoryName") String categoryName, @RequestParam(value = "query") String query) {
         log.info(" @GetMapping(\"/inventory/product\")");
         log.info("{} {}",categoryName, query);
-//        int category_id = testService.getCategoryId(categoryName);
-//        log.info(category_id + " ");
-        List<Item> items = new ArrayList<Item>();
-        List<Item> child = new ArrayList<Item>();
-//        child.add(new Item("child1",1,"(1)","Child1","2023.02.01","name1"));
-//        child.add(new Item("child2",2,"(2)","Child2","2023.02.01","name1"));
-//        List<Item> child2 = new ArrayList<Item>();
-//        child2.add(new Item("child3",1,"(1)","Child3","2023.02.01","name1"));
-//        child2.add(new Item("child4",2,"(1)","Child4","2023.02.01","name1"));
-//        Items.add(new Item("item1",1,"(1)","제조사1","2023.02.01","name1",child));
-//        Items.add(new Item("item2",2,"(2)","제조사2","2023.02.01","name1",child2));
+        List<Item> items;
+        Category category = testService.getCategory(new Category(categoryName, 0, 1));
 
-
+        items = category == null ? testService.selectAllItems(1) : testService.getItemInCategory(category);
+        List<Item> child = new ArrayList<>();
+        log.info(items.toString());
+        for (Item item : items) {
+            item.setCategoryName(testService.selectCategoryName(item.getCategory_id()));
+            item.setChildProductList(child);
+        }
         return new ResponseEntity<>(items, HttpStatus.OK);
 
     }
+
     @PostMapping("/inventory/product")
-    public ResponseEntity<HttpStatus> insertItem(@RequestBody HashMap<String,Object> param) {
+    public ResponseEntity<HttpStatus> insertItem(@RequestBody List<Map<String,Object>> param) {
         log.info("@PostMapping(\"/inventory/product\")");
         log.info(param.toString());
 
+        Category category = testService.getCategory(new Category((String)param.get(0).get("categoryName"), 0, user.getUser_id()));
+        category = testService.getCategory(category);
+
+        HashMap<String, Object> map = new HashMap<>();
+        for (Map<String, Object> stringObjectMap : param)
+        {
+            map.put("manufacturer",  stringObjectMap.get("manufacturer"));
+            map.put("amount",  stringObjectMap.get("amount"));
+            map.put("unit",  stringObjectMap.get("unit"));
+            map.put("category_id", category.getCategory_id());
+            map.put("name",  stringObjectMap.get("name"));
+            map.put("warehouseDate",  stringObjectMap.get("warehouseDate"));
+            testService.insertItem(map);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
+
     @PostMapping("/inventory/category")
     public ResponseEntity<HttpStatus> insertCategory(@RequestParam(value = "categoryName") String categoryName)
     {
@@ -96,7 +107,7 @@ public class InventoryController {
         Category category = new Category();
         category.setUser_id(1);
         category.setName(categoryName);
-        Integer isSuccess = testService.deleteCategory(category);
+        testService.deleteCategory(category);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -124,5 +135,71 @@ public class InventoryController {
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping("/inventory/product/name")
+    public ResponseEntity<HttpStatus> putName(@RequestBody Map<String,Object> param)
+    {
+        log.info("@PutMapping(\"/inventory/product/name\")");
+        log.info("param: " + param.toString());
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("user_id", "1");
+
+        map.put("oldProdNm", param.get("oldProdNm"));
+        map.put("newProdNm", param.get("newProdNm"));
+        testService.updateProductName(map);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @PutMapping("/inventory/product/{targetColumn}")
+    public ResponseEntity<HttpStatus> putParameter(@RequestBody List<Map<String,Object>> param,
+                                                   @PathVariable(value = "targetColumn") String targetColumn)
+    {
+        log.info("@PutMapping(\"/inventory/product/{targetColumn}\")");
+        log.info("param: " + param.toString());
+        log.info("targetColumn: " + targetColumn);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("user_id", "1");
+
+        switch (targetColumn) {
+            case "manufacturer":
+                for (Map<String, Object> stringObjectMap : param) {
+                    map.put("prodNm", stringObjectMap.get("prodNm"));
+                    map.put("newManufacturer", stringObjectMap.get("newManufacturer"));
+                    testService.updateManufacturer(map);
+                }
+                break;
+            case "warehouseDate":
+                for (Map<String, Object> stringObjectMap : param) {
+                    map.put("prodNm", stringObjectMap.get("prodNm"));
+                    map.put("newWarehouseDt", stringObjectMap.get("newWarehouseDt"));
+                    testService.updateWarehouseDate(map);
+                }
+                break;
+            case "category":
+                Category category = new Category();
+                for (Map<String, Object> stringObjectMap : param) {
+                    category.setUser_id(1);
+                    category.setName(stringObjectMap.get("newCategoryNm").toString());
+
+                    category = testService.getCategory(category);
+                    map.put("prodNm", stringObjectMap.get("prodNm"));
+                    map.put("newCategoryId", category.getCategory_id());
+                    testService.updateCategory(map);
+                }
+                break;
+            case "unit":
+                for (Map<String, Object> stringObjectMap : param) {
+                    map.put("prodNm", stringObjectMap.get("prodNm"));
+                    map.put("newUnit", stringObjectMap.get("newUnit"));
+                    testService.updateUnit(map);
+                }
+                break;
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
