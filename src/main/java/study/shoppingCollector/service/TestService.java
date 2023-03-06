@@ -1,11 +1,13 @@
 package study.shoppingCollector.service;
 
 import study.shoppingCollector.model.dto.Category;
+import study.shoppingCollector.model.dto.Composite;
 import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TestService {
     public List<Category> getAllCategoryList(User user);
@@ -22,7 +24,7 @@ public interface TestService {
 
     boolean updateCategoryName(HashMap<String, String> map);
 
-    boolean insertItem(HashMap<String, Object> map);
+    boolean insertItem(Item item);
 
     List<Item> selectAllItems(int user_id);
 
@@ -37,4 +39,15 @@ public interface TestService {
     boolean updateCategory(HashMap<String, Object> map);
 
     boolean updateUnit(HashMap<String, Object> map);
+
+    List<Item> selectChildItem(Item item);
+
+    Integer insertChild(Composite composite);
+
+    Item selectOneItem(Object object);
+
+    Integer deleteProduct(String name);
+
+    void deleteChild(Composite composite);
+
 }

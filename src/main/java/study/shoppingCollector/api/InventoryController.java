@@ -5,23 +5,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
-import org.hibernate.Session;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import study.shoppingCollector.model.dto.Category;
+import study.shoppingCollector.model.dto.Composite;
 import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 import study.shoppingCollector.service.TestService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,55 +29,54 @@ public class InventoryController {
 
     private final TestService testService;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
 
     @GetMapping("/inventory/categories")
     public ResponseEntity<List<Category>> categories(HttpServletRequest request, Model model) {
         log.info("@GetMapping(\"/inventory/categories\")");
         List<Category> list = testService.getAllCategoryList(user);
-
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         return ResponseEntity.ok(list);
-
     }
 
     @GetMapping("/inventory/product")
     public ResponseEntity<List<Item>> items(@RequestParam(value = "categoryName") String categoryName, @RequestParam(value = "query") String query) {
         log.info(" @GetMapping(\"/inventory/product\")");
-        log.info("{} {}",categoryName, query);
+        log.info("categoryName{} query{}",categoryName, query);
         List<Item> items;
+        List<Item> childs;
         Category category = testService.getCategory(new Category(categoryName, 0, 1));
 
         items = category == null ? testService.selectAllItems(1) : testService.getItemInCategory(category);
-        List<Item> child = new ArrayList<>();
-        log.info(items.toString());
+
         for (Item item : items) {
             item.setCategoryName(testService.selectCategoryName(item.getCategory_id()));
-            item.setChildProductList(child);
+            childs = testService.selectChildItem(item);
+
+            for(Item child : childs)
+                child.setCategoryName(testService.selectCategoryName(child.getCategory_id()));
+
+            item.setChildProductList(childs);
         }
         return new ResponseEntity<>(items, HttpStatus.OK);
-
     }
 
     @PostMapping("/inventory/product")
-    public ResponseEntity<HttpStatus> insertItem(@RequestBody List<Map<String,Object>> param) {
+    public ResponseEntity<HttpStatus> insertItem(@RequestBody String param) throws JsonProcessingException {
         log.info("@PostMapping(\"/inventory/product\")");
         log.info(param.toString());
 
-        Category category = testService.getCategory(new Category((String)param.get(0).get("categoryName"), 0, user.getUser_id()));
-        category = testService.getCategory(category);
+        Category category;
 
-        HashMap<String, Object> map = new HashMap<>();
-        for (Map<String, Object> stringObjectMap : param)
+        List<Item> items = mapper.readValue(param, new TypeReference<>() {});
+
+        for (Item item : items)
         {
-            map.put("manufacturer",  stringObjectMap.get("manufacturer"));
-            map.put("amount",  stringObjectMap.get("amount"));
-            map.put("unit",  stringObjectMap.get("unit"));
-            map.put("category_id", category.getCategory_id());
-            map.put("name",  stringObjectMap.get("name"));
-            map.put("warehouseDate",  stringObjectMap.get("warehouseDate"));
-            testService.insertItem(map);
+            category = testService.getCategory(new Category(item.getCategoryName(), 0, user.getUser_id()));
+            item.setCategory_id(category.getCategory_id());
+            item.setChildProductList(new ArrayList<Item>());
+            testService.insertItem(item);
         }
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -123,7 +116,7 @@ public class InventoryController {
 
         if(testService.getCategory(checkCategory) == null)
         {
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
             map.put("oldCategoryName", oldCategoryName);
             map.put("newCategoryName", newCategoryName);
             map.put("user_id","1");
@@ -143,7 +136,7 @@ public class InventoryController {
         log.info("@PutMapping(\"/inventory/product/name\")");
         log.info("param: " + param.toString());
 
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("user_id", "1");
 
         map.put("oldProdNm", param.get("oldProdNm"));
@@ -156,49 +149,90 @@ public class InventoryController {
 
     @PutMapping("/inventory/product/{targetColumn}")
     public ResponseEntity<HttpStatus> putParameter(@RequestBody List<Map<String,Object>> param,
-                                                   @PathVariable(value = "targetColumn") String targetColumn)
-    {
+                                                   @PathVariable(value = "targetColumn") String targetColumn) throws JsonProcessingException {
         log.info("@PutMapping(\"/inventory/product/{targetColumn}\")");
         log.info("param: " + param.toString());
         log.info("targetColumn: " + targetColumn);
-
         HashMap<String, Object> map = new HashMap<>();
         map.put("user_id", "1");
 
         switch (targetColumn) {
-            case "manufacturer":
-                for (Map<String, Object> stringObjectMap : param) {
-                    map.put("prodNm", stringObjectMap.get("prodNm"));
-                    map.put("newManufacturer", stringObjectMap.get("newManufacturer"));
-                    testService.updateManufacturer(map);
-                }
-                break;
-            case "warehouseDate":
-                for (Map<String, Object> stringObjectMap : param) {
-                    map.put("prodNm", stringObjectMap.get("prodNm"));
-                    map.put("newWarehouseDt", stringObjectMap.get("newWarehouseDt"));
-                    testService.updateWarehouseDate(map);
-                }
-                break;
-            case "category":
-                Category category = new Category();
-                for (Map<String, Object> stringObjectMap : param) {
-                    category.setUser_id(1);
-                    category.setName(stringObjectMap.get("newCategoryNm").toString());
+        case "manufacturer":
+            for (Map<String, Object> stringObjectMap : param) {
+                map.put("prodNm", stringObjectMap.get("prodNm"));
+                map.put("newManufacturer", stringObjectMap.get("newManufacturer"));
+                testService.updateManufacturer(map);
+            }
+            break;
+        case "warehouseDate":
+            for (Map<String, Object> stringObjectMap : param) {
+                map.put("prodNm", stringObjectMap.get("prodNm"));
+                map.put("newWarehouseDt", stringObjectMap.get("newWarehouseDt"));
+                testService.updateWarehouseDate(map);
+            }
+            break;
+        case "category":
+            Category category = new Category();
+            for (Map<String, Object> stringObjectMap : param) {
+                category.setUser_id(1);
+                category.setName(stringObjectMap.get("newCategoryNm").toString());
 
-                    category = testService.getCategory(category);
-                    map.put("prodNm", stringObjectMap.get("prodNm"));
-                    map.put("newCategoryId", category.getCategory_id());
-                    testService.updateCategory(map);
-                }
-                break;
-            case "unit":
-                for (Map<String, Object> stringObjectMap : param) {
-                    map.put("prodNm", stringObjectMap.get("prodNm"));
-                    map.put("newUnit", stringObjectMap.get("newUnit"));
-                    testService.updateUnit(map);
-                }
-                break;
+                category = testService.getCategory(category);
+                map.put("prodNm", stringObjectMap.get("prodNm"));
+                map.put("newCategoryId", category.getCategory_id());
+                testService.updateCategory(map);
+            }
+            break;
+        case "unit":
+            for (Map<String, Object> stringObjectMap : param) {
+                map.put("prodNm", stringObjectMap.get("prodNm"));
+                map.put("newUnit", stringObjectMap.get("newUnit"));
+                testService.updateUnit(map);
+            }
+            break;
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/inventory/product-link")
+    public ResponseEntity<HttpStatus> insertProdLink(@RequestBody List<Map<String,Object>> param)
+    {
+        Item parentItem;
+        Item childItem;
+        Composite composite = new Composite();
+        for(Map<String,Object> product : param)
+        {
+            parentItem = testService.selectOneItem(product.get("parentProdNm"));
+            childItem = testService.selectOneItem(product.get("childProdNm"));
+            composite.setItem_id(parentItem.getItem_id());
+            composite.setReference_id(childItem.getItem_id());
+            testService.insertChild(composite);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/inventory/product")
+    public ResponseEntity<HttpStatus> deleteProduct(@RequestBody List<String> param)
+    {
+        for (String name : param)
+            testService.deleteProduct(name);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @DeleteMapping("/inventory/product-link")
+    public ResponseEntity<HttpStatus> deleteProdLink(@RequestBody List<Map<String,Object>> param) {
+        Item parentItem;
+        Item childItem;
+        Composite composite = new Composite();
+        for(Map<String,Object> product : param)
+        {
+            parentItem = testService.selectOneItem(product.get("parentProdNm"));
+            childItem = testService.selectOneItem(product.get("childProdNm"));
+            composite.setItem_id(parentItem.getItem_id());
+            composite.setReference_id(childItem.getItem_id());
+            testService.deleteChild(composite);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

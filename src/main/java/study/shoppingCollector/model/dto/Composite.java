@@ -12,4 +12,5 @@ import lombok.Setter;
 public class Composite {
     private int composite_id;
     private int item_id;
+    private int reference_id;
 }

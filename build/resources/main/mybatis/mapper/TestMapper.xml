@@ -35,7 +35,7 @@
         where A.category_id=B.category_id;
     </update>
 
-    <insert id="insertItem" parameterType="hashmap">
+    <insert id="insertItem" parameterType="study.shoppingCollector.model.dto.Item">
         insert into item(manufacturer,amount,warehouseDate,unit,category_id,name)
         values (#{manufacturer},#{amount},#{warehouseDate},#{unit},#{category_id},#{name});
     </insert>
@@ -78,4 +78,32 @@
         set a.unit=#{newUnit}
         where A.category_id=B.category_id and a.name=#{prodNm};
     </update>
+
+    <update id="updateItem" parameterType="study.shoppingCollector.model.dto.Item">
+        update item as A, (select category_id from category where user_id=#{user_id}) as B
+        set a.manufacturer=#{manufacturer},a.warehouseDate=#{warehouseDate},a.category_id=#{category_id},a.unit=#{unit}
+        where A.category_id=B.category_id and a.name=#{name};
+    </update>
+
+    <select id="selectChildItem" parameterType="study.shoppingCollector.model.dto.Item" resultType="study.shoppingCollector.model.dto.Item">
+        select a.item_id,a.manufacturer,a.amount,a.warehousedate,a.unit,a.category_id,a.name
+        from item a, (select *from composite where item_id=#{item_id}) b
+        where a.item_id=b.reference_id;
+    </select>
+
+    <insert id="insertChild" parameterType="study.shoppingCollector.model.dto.Composite">
+        insert into composite(item_id,reference_id) values(#{item_id},#{reference_id});
+    </insert>
+
+    <select id="selectOneItem" parameterType="Object" resultType="study.shoppingCollector.model.dto.Item">
+        select *from item where name=#{product_name};
+    </select>
+
+    <delete id="deleteProduct" parameterType="String">
+        delete from item where name=#{name};
+    </delete>
+
+    <delete id="deleteChild" parameterType="hashmap">
+        delete from composite where item_id=#{item_id} and reference_id=#{reference_id}
+    </delete>
 </mapper>

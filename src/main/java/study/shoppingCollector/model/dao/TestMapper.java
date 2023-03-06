@@ -3,11 +3,13 @@ package study.shoppingCollector.model.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import study.shoppingCollector.model.dto.Category;
+import study.shoppingCollector.model.dto.Composite;
 import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Mapper
@@ -26,7 +28,7 @@ public interface TestMapper {
 
     boolean updateCategoryName(HashMap<String, String> map);
 
-    boolean insertItem(HashMap<String, Object> map);
+    boolean insertItem(Item item);
 
     List<Item> selectAllItems(int user_id);
 
@@ -41,4 +43,14 @@ public interface TestMapper {
     boolean updateCategory(HashMap<String, Object> map);
 
     boolean updateUnit(HashMap<String, Object> map);
+
+    List<Item> selectChildItem(Item item);
+
+    Integer insertChild(Composite composite);
+
+    Item selectOneItem(Object object);
+
+    Integer deleteProduct(String name);
+
+    void deleteChild(Composite composite);
 }
