@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="study.shoppingCollector.model.dao.TestMapper">
+<mapper namespace="study.shoppingCollector.model.dao.Mapper">
     <select id="getAllCategoryList" resultType="study.shoppingCollector.model.dto.Category" parameterType="study.shoppingCollector.model.dto.User">
         SELECT * FROM CATEGORY where user_id=#{user_id};
     </select>
@@ -28,7 +28,7 @@
         DELETE FROM CATEGORY WHERE NAME=#{name} and user_id=#{user_id}
     </delete>
 
-    <update id="updateCategoryName" parameterType="hashmap">
+    <update id="updateCategoryName" parameterType="study.shoppingCollector.model.dto.UpdateCategoryName">
         UPDATE CATEGORY as A,
         (SELECT * FROM CATEGORY where user_id=#{user_id} and name=#{oldCategoryName}) as B
         SET A.name=#{newCategoryName}
@@ -48,32 +48,32 @@
         select * from item as A, (select category_id from category where user_id=#{user_id}) as B where A.category_id=B.category_id;
     </select>
 
-    <update id="updateProductName" parameterType="hashmap">
+    <update id="updateProductName" parameterType="study.shoppingCollector.model.dto.ChangeParameter">
         update item as A, (select category_id from category where user_id=#{user_id}) as B
         set a.name=#{newProdNm}
         where A.category_id=B.category_id and a.name=#{oldProdNm};
 
     </update>
 
-    <update id="updateManufacturer" parameterType="hashmap">
+    <update id="updateManufacturer" parameterType="study.shoppingCollector.model.dto.ChangeParameter">
         update item as A, (select category_id from category where user_id=#{user_id}) as B
         set a.manufacturer=#{newManufacturer}
         where A.category_id=B.category_id and a.name=#{prodNm};
     </update>
 
-    <update id="updateWarehouseDate" parameterType="hashmap">
+    <update id="updateWarehouseDate" parameterType="study.shoppingCollector.model.dto.ChangeParameter">
         update item as A, (select category_id from category where user_id=#{user_id}) as B
         set a.warehouseDate=#{newWarehouseDt}
         where A.category_id=B.category_id and a.name=#{prodNm};
     </update>
 
-    <update id="updateCategory" parameterType="hashmap">
+    <update id="updateCategory" parameterType="study.shoppingCollector.model.dto.ChangeParameter">
         update item as A, (select category_id from category where user_id=#{user_id}) as B
         set a.category_id=#{newCategoryId}
         where a.name=#{prodNm};
     </update>
 
-    <update id="updateUnit" parameterType="hashmap">
+    <update id="updateUnit" parameterType="study.shoppingCollector.model.dto.ChangeParameter">
         update item as A, (select category_id from category where user_id=#{user_id}) as B
         set a.unit=#{newUnit}
         where A.category_id=B.category_id and a.name=#{prodNm};

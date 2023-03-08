@@ -1,19 +1,13 @@
 package study.shoppingCollector.model.dao;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-import study.shoppingCollector.model.dto.Category;
-import study.shoppingCollector.model.dto.Composite;
-import study.shoppingCollector.model.dto.Item;
-import study.shoppingCollector.model.dto.User;
+import study.shoppingCollector.model.dto.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
-@Mapper
-public interface TestMapper {
+@org.apache.ibatis.annotations.Mapper
+public interface Mapper {
     List<Category> getAllCategoryList(User user);
 
     List<Item> getItemInCategory(Category category);
@@ -26,7 +20,7 @@ public interface TestMapper {
 
     Integer deleteCategory(Category category);
 
-    boolean updateCategoryName(HashMap<String, String> map);
+    boolean updateCategoryName(UpdateCategoryName param);
 
     boolean insertItem(Item item);
 
@@ -34,15 +28,15 @@ public interface TestMapper {
 
     String selectCategoryName(int user_id);
 
-    boolean updateProductName(HashMap<String, Object> map);
+    boolean updateProductName(ChangeParameter param);
 
-    boolean updateManufacturer(HashMap<String, Object> map);
+    boolean updateManufacturer(ChangeParameter param);
 
-    boolean updateWarehouseDate(HashMap<String, Object> map);
+    boolean updateWarehouseDate(ChangeParameter param);
 
-    boolean updateCategory(HashMap<String, Object> map);
+    boolean updateCategory(ChangeParameter param);
 
-    boolean updateUnit(HashMap<String, Object> map);
+    boolean updateUnit(ChangeParameter param);
 
     List<Item> selectChildItem(Item item);
 

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.example.demo.model.dao.TestMapper">
 
-    <select id="getAllDataList" resultType="study.shoppingCollector.model.dao.TestMapper">
+    <select id="getAllDataList" resultType="study.shoppingCollector.model.dao.Mapper">
         SELECT * FROM CATEGORY;
     </select>
 

@@ -28,32 +28,26 @@ public class ViewController {
     public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
     @GetMapping("/")
     public String login(HttpServletRequest request, HttpServletResponse response) {
-        log.info("@GetMapping(\"/\")");
         return "login";
     }
 
     @GetMapping("/order/collect")
     public String collect(HttpServletRequest request, HttpServletResponse response) {
-        log.info("@GetMapping(\"/order/collect\")");
         return "order/collect";
     }
 
     @GetMapping("/inventory/manage")
     public String manage(HttpServletRequest request, HttpServletResponse response) {
-        log.info("@GetMapping(\"/inventory/manage\")");
         return "inventory/manage";
     }
+
     @GetMapping("/inventory/products/add")
     public String addProduct(HttpServletRequest request, HttpServletResponse response) {
-        log.info("@GetMapping(\"/inventory/products/add\")");
         return "inventory/addProducts";
     }
 
     @PostMapping("/authenticate")
     public String authenticate(@RequestParam(name="loginId") String loginId, HttpServletRequest request, HttpServletResponse response) {
-        log.info("@PostMapping(\"/authenticate\")");
-
-
         return "inventory/manage";
     }
 
