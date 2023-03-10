@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 public class User {
     private int user_id;
     private String email;
-    private String password;
+    private String pw;
     private Timestamp register_date;
     private Timestamp update_date;
 }

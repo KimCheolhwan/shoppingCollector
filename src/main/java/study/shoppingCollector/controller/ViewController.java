@@ -26,7 +26,7 @@ public class ViewController {
     private final TestService testService;
 
     public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-    @GetMapping("/")
+    @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response) {
         return "login";
     }
