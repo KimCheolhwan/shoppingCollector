@@ -14,8 +14,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class User {
     private int user_id;
-    private String email;
-    private String pw;
+    private String loginId;
+    private String loginPwd;
     private Timestamp register_date;
     private Timestamp update_date;
 }

@@ -18,6 +18,8 @@ import study.shoppingCollector.model.dto.UpdateCategoryName;
 import study.shoppingCollector.model.dto.User;
 import study.shoppingCollector.service.ChangeService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -27,19 +29,20 @@ import java.util.List;
 public class ChangeController {
     private final ChangeService changeService;
     private final ObjectMapper mapper = new ObjectMapper();
-    public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-
+    public User user;
 
     @PutMapping("/inventory/product/{targetColumn}")
-    public ResponseEntity<HttpStatus> putParameter(@RequestBody String param,
+    public ResponseEntity<HttpStatus> putParameter(@RequestBody String param, HttpServletRequest request,
                                                    @PathVariable(value = "targetColumn") String targetColumn) throws JsonProcessingException {
 
-        log.info(targetColumn);
+        HttpSession session = request.getSession(false);
+
+        user = (User)session.getAttribute(session.getId());
         List<ChangeParameter> params = mapper.readValue(param, new TypeReference<>() {});
 
         for(ChangeParameter CP : params)
         {
-            CP.setUser_id("1");
+            CP.setUser_id(user.getUser_id());
             switch (targetColumn){
                 case "name":
                     changeService.updateProductName(CP);
@@ -68,15 +71,19 @@ public class ChangeController {
     }
 
     @PutMapping("/inventory/category")
-    public ResponseEntity<HttpStatus> putCategory(@QueryStringArgResolver UpdateCategoryName updateCategoryName)
+    public ResponseEntity<HttpStatus> putCategory(@QueryStringArgResolver UpdateCategoryName updateCategoryName,
+                                                  HttpServletRequest request)
     {
+        HttpSession session = request.getSession(false);
+
+        user = (User)session.getAttribute(session.getId());
         Category checkCategory = new Category();
-        checkCategory.setUser_id(1);
+        checkCategory.setUser_id(user.getUser_id());
         checkCategory.setName(updateCategoryName.getNewCategoryName());
 
         if(changeService.getCategory(checkCategory) == null)
         {
-            updateCategoryName.setUser_id("1");
+            updateCategoryName.setUser_id(user.getUser_id());
             changeService.updateCategoryName(updateCategoryName);
             return new ResponseEntity<>(HttpStatus.OK);
         }

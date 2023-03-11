@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChangeParameter {
-    private String user_id;
+    private int user_id;
     private String prodNm;
     private String newManufacturer;
     private String newWarehouseDt;

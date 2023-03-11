@@ -16,8 +16,8 @@
         select name from category where category_id=#{categpry_id};
     </select>
 
-    <select id="findByUser" resultType="study.shoppingCollector.model.dto.User" parameterType="String">
-        SELECT * FROM user where email=#{email};
+    <select id="findByUser" resultType="study.shoppingCollector.model.dto.User" parameterType="study.shoppingCollector.model.dto.User">
+        SELECT * FROM user where loginId=#{loginId} and loginPwd=#{loginPwd};
     </select>
 
     <insert id="insertCategory" parameterType="study.shoppingCollector.model.dto.Category">

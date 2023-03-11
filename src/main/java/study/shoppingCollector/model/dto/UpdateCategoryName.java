@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateCategoryName {
-    private String user_id;
+    private int user_id;
     private String oldCategoryName;
     private String newCategoryName;
 }

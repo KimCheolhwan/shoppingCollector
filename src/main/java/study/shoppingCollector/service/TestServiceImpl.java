@@ -29,8 +29,8 @@ public class TestServiceImpl implements TestService{
     }
 
     @Override
-    public User findByUser(String email) {
-        return mapper.findByUser(email);
+    public User findByUser(User user) {
+        return mapper.findByUser(user);
     }
 
     @Override

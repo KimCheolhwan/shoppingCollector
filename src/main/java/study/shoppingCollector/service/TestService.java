@@ -13,13 +13,13 @@ public interface TestService {
 
     Category getCategory(Category category);
 
-    User findByUser(String email);
+    User findByUser(User user);
 
-    Integer insertCategory(Category category);
+    void insertCategory(Category category);
 
-    Integer deleteCategory(Category category);
+    void deleteCategory(Category category);
 
-    boolean insertItem(Item item);
+    void insertItem(Item item);
 
     List<Item> selectAllItems(int user_id);
 
@@ -27,11 +27,11 @@ public interface TestService {
 
     List<Item> selectChildItem(Item item);
 
-    Integer insertChild(Composite composite);
+    void insertChild(Composite composite);
 
     Item selectOneItem(Object object);
 
-    Integer deleteProduct(String name);
+    void deleteProduct(String name);
 
     void deleteChild(Composite composite);
 

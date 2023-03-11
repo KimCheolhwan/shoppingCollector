@@ -14,7 +14,7 @@ public interface Mapper {
 
     Category getCategory(Category category);
 
-    User findByUser(String email);
+    User findByUser(User user);
 
     Integer insertCategory(Category category);
 

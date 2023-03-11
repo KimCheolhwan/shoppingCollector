@@ -15,6 +15,8 @@ import study.shoppingCollector.model.dto.Item;
 import study.shoppingCollector.model.dto.User;
 import study.shoppingCollector.service.TestService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +27,17 @@ import java.util.Map;
 public class DeleteController {
     private final TestService testService;
     private final ObjectMapper mapper = new ObjectMapper();
-    public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+    public User user;
 
     @DeleteMapping("/inventory/category")
-    public ResponseEntity<HttpStatus> deleteCategory(@RequestParam(value = "categoryName") String categoryName)
+    public ResponseEntity<HttpStatus> deleteCategory(@RequestParam(value = "categoryName") String categoryName,
+                                                     HttpServletRequest request)
     {
+        HttpSession session = request.getSession(false);
+
+        user = (User)session.getAttribute(session.getId());
         Category category = new Category();
-        category.setUser_id(1);
+        category.setUser_id(user.getUser_id());
         category.setName(categoryName);
         testService.deleteCategory(category);
 

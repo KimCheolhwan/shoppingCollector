@@ -14,6 +14,7 @@ import study.shoppingCollector.model.dto.*;
 import study.shoppingCollector.service.TestService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,21 +28,24 @@ public class InventoryController {
 
     private final TestService testService;
     private final ObjectMapper mapper = new ObjectMapper();
-    public final User user = new User(1,"jasd0330@naver.com","12341234", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+    private User user;
 
     @GetMapping("/inventory/categories")
     public ResponseEntity<List<Category>> categories(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        user = (User)session.getAttribute(session.getId());
         List<Category> list = testService.getAllCategoryList(user);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/inventory/product")
-    public ResponseEntity<List<Item>> items(@RequestParam(value = "categoryName") String categoryName, @RequestParam(value = "query") String query) {
+    public ResponseEntity<List<Item>> items(@RequestParam(value = "categoryName") String categoryName, @RequestParam(value = "query") String query, HttpServletRequest request) {
         List<Item> items;
         List<Item> childs;
-        Category category = testService.getCategory(new Category(categoryName, 0, 1));
 
-        items = category == null ? testService.selectAllItems(1) : testService.getItemInCategory(category);
+        Category category = testService.getCategory(new Category(categoryName, 0, user.getUser_id()));
+
+        items = category == null ? testService.selectAllItems(user.getUser_id()) : testService.getItemInCategory(category);
 
         for (Item item : items) {
             item.setCategoryName(testService.selectCategoryName(item.getCategory_id()));
@@ -64,7 +68,7 @@ public class InventoryController {
         {
             category = testService.getCategory(new Category(item.getCategoryName(), 0, user.getUser_id()));
             item.setCategory_id(category.getCategory_id());
-            item.setChildProductList(new ArrayList<Item>());
+            item.setChildProductList(new ArrayList<>());
             testService.insertItem(item);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -74,7 +78,7 @@ public class InventoryController {
     public ResponseEntity<HttpStatus> insertCategory(@RequestParam(value = "categoryName") String categoryName)
     {
         Category category = new Category();
-        category.setUser_id(1);
+        category.setUser_id(user.getUser_id());
         category.setName(categoryName);
         testService.insertCategory(category);
         return new ResponseEntity<>(HttpStatus.OK);
