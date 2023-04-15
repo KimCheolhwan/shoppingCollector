@@ -34,18 +34,17 @@ public class TestServiceImpl implements TestService{
     }
 
     @Override
-    public Integer insertCategory(Category category) {
-        return mapper.insertCategory(category);
+    public void insertCategory(Category category) {
+        mapper.insertCategory(category);
     }
 
     @Override
-    public Integer deleteCategory(Category category) {
-        return mapper.deleteCategory(category);
+    public void deleteCategory(Category category) {mapper.deleteCategory(category);
     }
 
     @Override
-    public boolean insertItem(Item item) {
-        return mapper.insertItem(item);
+    public void insertItem(Item item) {
+        mapper.insertItem(item);
     }
 
     @Override
@@ -64,8 +63,7 @@ public class TestServiceImpl implements TestService{
     }
 
     @Override
-    public Integer insertChild(Composite composite) {
-        return mapper.insertChild(composite);
+    public void insertChild(Composite composite) {mapper.insertChild(composite);
     }
 
     @Override
@@ -74,8 +72,8 @@ public class TestServiceImpl implements TestService{
     }
 
     @Override
-    public Integer deleteProduct(String name) {
-        return mapper.deleteProduct(name);
+    public void deleteProduct(String name) {
+        mapper.deleteProduct(name);
     }
 
     @Override
